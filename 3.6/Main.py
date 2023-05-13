@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(0, './Modules/')
+sys.path.insert(0, '/content/DeepFMPO/3.6/Modules/')
 
 import numpy as np
 
@@ -52,8 +52,8 @@ def main(fragment_file, lead_file):
 
 if __name__ == "__main__":
 
-    fragment_file = "Data/molecules.smi"
-    lead_file = "Data/dopamineD4props.csv"
+    fragment_file = "/content/DeepFMPO/3.6/Data/molecules.smi"
+    lead_file = "/content/DeepFMPO/3.6/Data/dopamineD4props.csv"
 
 
     if len(sys.argv) > 1:
@@ -63,4 +63,5 @@ if __name__ == "__main__":
         lead_file = sys.argv[2]
 
     main(fragment_file, lead_file)
+
 
