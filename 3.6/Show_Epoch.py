@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(0, './Modules/')
+sys.path.insert(0, '/content/DeepFMPO/3.6/Modules/')
 
 from build_encoding import read_decodings, decode
 from rewards import evaluate_chem_mol
