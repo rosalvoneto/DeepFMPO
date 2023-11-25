@@ -21,7 +21,7 @@ def train(X, actor, critic, decodings, out_dir=None):
         # Select random starting "lead" molecules
         rand_n = np.random.randint(0,X.shape[0],BATCH_SIZE)
         batch_mol = X[rand_n].copy()
-        
+
         # For all modification steps
         for t in range(TIMES):
 
@@ -33,6 +33,9 @@ def train(X, actor, critic, decodings, out_dir=None):
                 a = np.random.randint(0, 62)
 
                 a = int(a // MAX_SWAP)
+
+                if a == 12:
+                    a = 11
 
                 s = a % MAX_SWAP
                 

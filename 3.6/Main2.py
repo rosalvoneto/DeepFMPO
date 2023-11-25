@@ -7,7 +7,7 @@ from file_reader import read_file
 from mol_utils import get_fragments
 from build_encoding import get_encodings, encode_molecule, decode_molecule, encode_list, save_decodings
 from models import build_models
-from training import train
+from training2 import train
 from rewards import clean_good
 from rdkit import rdBase
 import logging
