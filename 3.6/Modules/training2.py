@@ -5,6 +5,8 @@ import logging
 
 from rewards import decode
 
+from rdkit import Chem
+
 
 scores = 1. / TIMES
 n_actions = MAX_FRAGMENTS * MAX_SWAP + 1
@@ -47,8 +49,9 @@ def train(X, actor, critic, decodings, out_dir=None):
                     fr = evaluate_mol(batch_mol[i], e, decodings)
                     if all(fr):
                         mol_new = decode(batch_mol[i], decodings)
-                        arquivo.write(f'{mol_new}\n')
-                        print('Uma molecula atendeu')
+                        smiles_code = Chem.MolToSmiles(mol_new)
+                        arquivo.write(f'{smiles_code}\n')
+                        #print('Uma molecula atendeu')
                     else:
                         batch_mol[i,a] = mol_orriginal
                 
