@@ -33,6 +33,7 @@ n_actions = MAX_FRAGMENTS * MAX_SWAP + 1
 def train(X, actor, critic, decodings, out_dir=None):
 
     hist = []
+    n_total = 0
     dist = get_init_dist(X, decodings)
     m = X.shape[1]
     with open('New_Mols.txt', 'w') as arquivo:
@@ -41,7 +42,7 @@ def train(X, actor, critic, decodings, out_dir=None):
             # Select random starting "lead" molecules
             rand_n = np.random.randint(0,X.shape[0],BATCH_SIZE)
             batch_mol = X[rand_n].copy()
-            # ---> Simulated Annealing <--- #
+            # ---> Simulated Annealing <--- #            
             n_total = n_total + 1
             t = decaimentoTemperatura(temperatura_inicial, n_total, alpha)
             # ---> Simulated Annealing <--- #
@@ -63,6 +64,7 @@ def train(X, actor, critic, decodings, out_dir=None):
 
                     s = a % MAX_SWAP                                        
                     mol_orriginal = batch_mol[i,a]
+                    mol_orriginal_av = batch_mol[i]
                     batch_mol[i,a] = modify_fragment(batch_mol[i,a], s)                    
                     fr = evaluate_mol(batch_mol[i], e, decodings)                    
                     if all(fr):
@@ -72,7 +74,7 @@ def train(X, actor, critic, decodings, out_dir=None):
                         #print('Uma molecula atendeu')
                     # Colocar uma prob aqui do simulated anealing
                     else:
-                        fr_old = evaluate_mol(mol_orriginal, e, decodings)                    
+                        fr_old = evaluate_mol(mol_orriginal_av, e, decodings)                    
                         delta = (np.sum(fr_old) - np.sum(fr))
                         chancePassoIndireto = getChancePassosIndireto(delta, t)
                         if not(np.random.rand()<=chancePassoIndireto):
