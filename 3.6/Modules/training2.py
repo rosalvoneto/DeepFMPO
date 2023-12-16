@@ -72,7 +72,10 @@ def train(X, actor, critic, decodings, out_dir=None):
                         smiles_code = Chem.MolToSmiles(mol_new)
                         arquivo.write(f'{smiles_code}\n')
                         #print('Uma molecula atendeu')
-                    # Colocar uma prob aqui do simulated anealing
+                    # Colocar uma prob aqui do simulated anealing - ok
+                    # Aqui proximo Sprint
+                    # melhorar a perfromance verificar se a temperatura for zero
+                    # Nao salvar duplicado tentar salar o JSON do rewards evaluated_mols
                     else:
                         fr_old = evaluate_mol(mol_orriginal_av, e, decodings)                    
                         delta = (np.sum(fr_old) - np.sum(fr))
