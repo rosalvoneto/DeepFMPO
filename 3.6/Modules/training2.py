@@ -73,9 +73,9 @@ def train(X, actor, critic, decodings, out_dir=None):
                         new = mols.get(smiles_code, 0)
                         if new == 0:
                             mols[smiles_code] =  1
-                        else:
-                            mols[smiles_code] =  new + 1
                             arquivo.write(f'{smiles_code}\n')
+                        else:
+                            mols[smiles_code] =  new + 1                            
                         #print('Uma molecula atendeu')
                     # Colocar uma prob aqui do simulated anealing - ok
                     # Aqui proximo Sprint
