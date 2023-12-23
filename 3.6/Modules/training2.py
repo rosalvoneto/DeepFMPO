@@ -32,7 +32,7 @@ n_actions = MAX_FRAGMENTS * MAX_SWAP + 1
 # Train actor and critic networks
 def train(X, actor, critic, decodings, out_dir=None):
 
-    hist = []
+    mols = {}
     n_total = 0
     dist = get_init_dist(X, decodings)
     m = X.shape[1]
@@ -70,7 +70,12 @@ def train(X, actor, critic, decodings, out_dir=None):
                     if all(fr):
                         mol_new = decode(batch_mol[i], decodings)
                         smiles_code = Chem.MolToSmiles(mol_new)
-                        arquivo.write(f'{smiles_code}\n')
+                        new = mols.get(smiles_code, 0)
+                        if new == 0:
+                            mols[smiles_code] =  1
+                        else:
+                            mols[smiles_code] =  new + 1
+                            arquivo.write(f'{smiles_code}\n')
                         #print('Uma molecula atendeu')
                     # Colocar uma prob aqui do simulated anealing - ok
                     # Aqui proximo Sprint
