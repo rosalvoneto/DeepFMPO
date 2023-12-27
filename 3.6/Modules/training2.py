@@ -8,6 +8,7 @@ from rewards import decode
 
 from rdkit import Chem
 
+import json
 
 ##################################################
 ############# Simulated Annealing ################
@@ -32,7 +33,11 @@ n_actions = MAX_FRAGMENTS * MAX_SWAP + 1
 # Train actor and critic networks
 def train(X, actor, critic, decodings, out_dir=None):
 
-    mols = {}
+    mols       = {}
+    dic_temp   = {}
+    dic_delta  = {}
+    dic_prob   = {}
+    dic_accept = {}
     n_total = 0
     dist = get_init_dist(X, decodings)
     m = X.shape[1]
@@ -44,7 +49,8 @@ def train(X, actor, critic, decodings, out_dir=None):
             batch_mol = X[rand_n].copy()
             # ---> Simulated Annealing <--- #            
             n_total = n_total + 1
-            t = decaimentoTemperatura(temperatura_inicial, n_total, alpha)
+            temp = decaimentoTemperatura(temperatura_inicial, n_total, alpha)
+            dic_temp[e] = temp
             # ---> Simulated Annealing <--- #
 
             # For all modification steps
@@ -84,13 +90,27 @@ def train(X, actor, critic, decodings, out_dir=None):
                     else:
                         fr_old = evaluate_mol(mol_orriginal_av, e, decodings)                    
                         delta = (np.sum(fr_old) - np.sum(fr))
-                        chancePassoIndireto = getChancePassosIndireto(delta, t)
+                        chancePassoIndireto = getChancePassosIndireto(delta, temp)
+                        dic_delta[e] = delta
+                        dic_prob[e] = chancePassoIndireto
                         if not(np.random.rand()<=chancePassoIndireto):
                             batch_mol[i,a] = mol_orriginal
+                            dic_accept[e] = 1
                 
             # np.save("History/out-{}.npy".format(e), batch_mol)
 
             print (f"Epoch {e}")
-        
+
+    with open("temperaturas.json", 'w') as arquivo:
+        json.dump(dic_temp, arquivo)    
+
+    with open("deltas.json", 'w') as arquivo:
+        json.dump(dic_delta, arquivo)            
+
+    with open("prob.json", 'w') as arquivo:
+        json.dump(dic_prob, arquivo)        
+
+    with open("aceitas.json", 'w') as arquivo:
+        json.dump(dic_accept, arquivo)        
 
     return True
