@@ -1,7 +1,7 @@
 import numpy as np
 from math import exp
 from global_parameters import MAX_SWAP, MAX_FRAGMENTS, GAMMA, BATCH_SIZE, EPOCHS, TIMES, FEATURES
-from rewards import get_init_dist, evaluate_mol, modify_fragment, evaluated_mols
+from rewards2 import get_init_dist, evaluate_mol, modify_fragment, evaluated_mols
 import logging
 
 from rewards import decode
