@@ -72,7 +72,7 @@ def train(X, actor, critic, decodings, out_dir=None):
                     mol_orriginal = batch_mol[i,a]
                     mol_orriginal_av = batch_mol[i]
                     batch_mol[i,a] = modify_fragment(batch_mol[i,a], s)                    
-                    fr = evaluate_mol(batch_mol[i], e, decodings)                    
+                    fr, score = evaluate_mol(batch_mol[i], e, decodings)                    
                     if all(fr):
                         mol_new = decode(batch_mol[i], decodings)
                         smiles_code = Chem.MolToSmiles(mol_new)
@@ -88,14 +88,15 @@ def train(X, actor, critic, decodings, out_dir=None):
                     # melhorar a perfromance verificar se a temperatura for zero
                     # Nao salvar duplicado tentar salar o JSON do rewards evaluated_mols
                     else:
-                        fr_old = evaluate_mol(mol_orriginal_av, e, decodings)                    
-                        delta = (np.sum(fr_old) - np.sum(fr))
-                        chancePassoIndireto = getChancePassosIndireto(delta, temp)
-                        dic_delta[e] = delta
-                        dic_prob[e] = chancePassoIndireto
-                        if not(np.random.rand()<=chancePassoIndireto):
-                            batch_mol[i,a] = mol_orriginal
-                            dic_accept[e] = 1
+                        _, score_old = evaluate_mol(mol_orriginal_av, e, decodings)                    
+                        delta = (score_old - score)
+                        if delta > 0:
+                            chancePassoIndireto = getChancePassosIndireto(delta, temp)
+                            dic_delta[e] = delta
+                            dic_prob[e] = chancePassoIndireto
+                            if not(np.random.rand()<=chancePassoIndireto):
+                                batch_mol[i,a] = mol_orriginal
+                                dic_accept[e] = 1
                 
             # np.save("History/out-{}.npy".format(e), batch_mol)
 

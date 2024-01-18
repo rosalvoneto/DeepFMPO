@@ -7,6 +7,51 @@ import rdkit.Chem.rdMolDescriptors as MolDescriptors
 from rdkit.Chem import Descriptors
 
 
+# (MW)    Molecular weight. 
+# (clogP) Lipophilicity.
+# (PSA)   Polar Surface Area.
+
+def calcular_pontuacao(mw, clogp, tpsa):
+
+    if 320 < mw < 420 and 2 < clogp < 3 and 40 < tpsa < 60:
+        return 100
+
+    pontuacao = 100
+
+    # Ajuste para mw
+    if mw < 320:
+      if mw < 170:
+        pontuacao -= 30
+      else:        
+        pontuacao -= (320 - mw) /5
+
+    if mw > 420:
+      if mw > 570:
+        pontuacao -= 30
+      else:
+        pontuacao -= (mw - 420) /5
+    
+    # Ajuste para clogp
+    if clogp < 2:
+      pontuacao -= (2 - clogp) * 10
+
+    if clogp > 3:
+      if clogp >= 6:
+        pontuacao -= 30
+      else:
+        pontuacao -= (clogp - 3) * 10    
+    
+    # Ajuste para tpsa
+    if tpsa < 40:
+      pontuacao -= (40 - tpsa) 
+
+    if tpsa > 60:
+      if tpsa > 100:
+        pontuacao -= 30
+      else:  
+        pontuacao -= (tpsa - 60) 
+    
+    return pontuacao
 
 
 # Cache evaluated molecules (rewards are only calculated once)
@@ -48,7 +93,7 @@ def evaluate_chem_mol(mol):
     except:
         ret_val = [False] * 4
 
-    return ret_val
+    return ret_val, mw, clogp, tpsa
 
 
 
@@ -64,13 +109,14 @@ def evaluate_mol(fs, epoch, decodings):
 
     try:
         mol = decode(fs, decodings)
-        ret_val = evaluate_chem_mol(mol)
+        ret_val, mw, clogp, tpsa = evaluate_chem_mol(mol)
+        score = calcular_pontuacao(mw, clogp, tpsa)
     except:
         ret_val = [False] * 4
 
     evaluated_mols[key] = (np.array(ret_val), epoch)
 
-    return np.array(ret_val)
+    return np.array(ret_val), score
 
 
 
