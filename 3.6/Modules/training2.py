@@ -100,7 +100,7 @@ def train(X, actor, critic, decodings, out_dir=None):
                                 batch_mol[i,a] = mol_orriginal
                                 dic_accept[e] = 1
                 
-                    if (temp < 0.03):
+                    if (temp < 0.9):
                         print('Stop search! Temperatue zero')
                         break
             # np.save("History/out-{}.npy".format(e), batch_mol)
