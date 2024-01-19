@@ -8,7 +8,7 @@ from mol_utils import get_fragments
 from build_encoding import get_encodings, encode_molecule, decode_molecule, encode_list, save_decodings
 from models import build_models
 from training2 import train
-from rewards import clean_good
+from rewards2 import clean_good
 from rdkit import rdBase
 import logging
 logging.getLogger().setLevel(logging.INFO)
@@ -40,7 +40,7 @@ def main(fragment_file, lead_file):
     logging.info("Building models")
     actor, critic = build_models(X.shape[1:])
 
-    X = clean_good(X, decodings)
+    X = clean__good(X, decodings)
 
     logging.info("Training")
     train(X, actor, critic, decodings)

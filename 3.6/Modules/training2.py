@@ -1,7 +1,7 @@
 import numpy as np
 from math import exp
 from global_parameters import MAX_SWAP, MAX_FRAGMENTS, GAMMA, BATCH_SIZE, EPOCHS, TIMES, FEATURES
-from rewards2 import get_init_dist, evaluate_mol, modify_fragment, evaluated_mols
+from rewards2 import get_init_dist, evaluate_mol, modify_fragment
 import logging
 
 from rewards import decode
@@ -72,7 +72,9 @@ def train(X, actor, critic, decodings, out_dir=None):
                     mol_orriginal = batch_mol[i,a]
                     mol_orriginal_av = batch_mol[i]
                     batch_mol[i,a] = modify_fragment(batch_mol[i,a], s)                    
-                    fr, score = evaluate_mol(batch_mol[i], e, decodings)                    
+                    fr, score, isNew = evaluate_mol(batch_mol[i], e, decodings)                    
+                    if not(isNew):
+                        continue
                     if all(fr):
                         mol_new = decode(batch_mol[i], decodings)
                         smiles_code = Chem.MolToSmiles(mol_new)
@@ -88,13 +90,13 @@ def train(X, actor, critic, decodings, out_dir=None):
                     # melhorar a perfromance verificar se a temperatura for zero
                     # Nao salvar duplicado tentar salar o JSON do rewards evaluated_mols
                     else:
-                        _, score_old = evaluate_mol(mol_orriginal_av, e, decodings)                    
-                        delta = (score_old - score)
-                        if delta > 0:
+                        _, score_old,_ = evaluate_mol(mol_orriginal_av, e, decodings)                    
+                        delta = abs(score_old - score)
+                        if temp > 0:
                             chancePassoIndireto = getChancePassosIndireto(delta, temp)
                             dic_delta[e] = delta
                             dic_prob[e] = chancePassoIndireto
-                            if not(np.random.rand()<=chancePassoIndireto):
+                            if (np.random.rand()<=chancePassoIndireto):
                                 batch_mol[i,a] = mol_orriginal
                                 dic_accept[e] = 1
                 

@@ -105,18 +105,19 @@ def evaluate_mol(fs, epoch, decodings):
     key = get_key(fs)
 
     if key in evaluated_mols:
-        return evaluated_mols[key][0]
+        return evaluated_mols[key][0], evaluated_mols[key][2], False
 
     try:
+        score = 0 
         mol = decode(fs, decodings)
         ret_val, mw, clogp, tpsa = evaluate_chem_mol(mol)
         score = calcular_pontuacao(mw, clogp, tpsa)
     except:
         ret_val = [False] * 4
 
-    evaluated_mols[key] = (np.array(ret_val), epoch)
+    evaluated_mols[key] = (np.array(ret_val), epoch, score)
 
-    return np.array(ret_val), score
+    return np.array(ret_val), score, True
 
 
 
