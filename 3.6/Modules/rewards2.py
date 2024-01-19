@@ -142,6 +142,6 @@ def get_init_dist(X, decodings):
 # Discard molecules which fulfills all targets (used to remove to good lead molecules).
 def clean_good(X, decodings):
     X = [X[i] for i in range(X.shape[0]) if not
-        evaluate_mol(X[i], -1, decodings).all()]
+        evaluate_mol(X[i], -1, decodings)[0].all()]
     return np.asarray(X)
 

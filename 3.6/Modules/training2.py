@@ -74,7 +74,7 @@ def train(X, actor, critic, decodings, out_dir=None):
                     batch_mol[i,a] = modify_fragment(batch_mol[i,a], s)                    
                     fr, score, isNew = evaluate_mol(batch_mol[i], e, decodings)                    
                     if not(isNew):
-                        continue
+                        continue                    
                     if all(fr):
                         mol_new = decode(batch_mol[i], decodings)
                         smiles_code = Chem.MolToSmiles(mol_new)
@@ -91,8 +91,8 @@ def train(X, actor, critic, decodings, out_dir=None):
                     # Nao salvar duplicado tentar salar o JSON do rewards evaluated_mols
                     else:
                         _, score_old,_ = evaluate_mol(mol_orriginal_av, e, decodings)                    
-                        delta = abs(score_old - score)
-                        if temp > 0:
+                        delta = (score_old - score)
+                        if (delta > 0) and (temp > 0):
                             chancePassoIndireto = getChancePassosIndireto(delta, temp)
                             dic_delta[e] = delta
                             dic_prob[e] = chancePassoIndireto

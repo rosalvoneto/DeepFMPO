@@ -40,7 +40,7 @@ def main(fragment_file, lead_file):
     logging.info("Building models")
     actor, critic = build_models(X.shape[1:])
 
-    X = clean__good(X, decodings)
+    X = clean_good(X, decodings)
 
     logging.info("Training")
     train(X, actor, critic, decodings)
