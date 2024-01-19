@@ -69,8 +69,8 @@ def train(X, actor, critic, decodings, out_dir=None):
                         a = 11
 
                     s = a % MAX_SWAP                                        
-                    mol_orriginal = batch_mol[i,a]
-                    mol_orriginal_av = batch_mol[i]
+                    mol_orriginal = batch_mol[i,a].copy()
+                    mol_orriginal_av = batch_mol[i].copy()
                     batch_mol[i,a] = modify_fragment(batch_mol[i,a], s)                    
                     fr, score, isNew = evaluate_mol(batch_mol[i], e, decodings)                    
                     if not(isNew):
@@ -92,14 +92,17 @@ def train(X, actor, critic, decodings, out_dir=None):
                     else:
                         _, score_old,_ = evaluate_mol(mol_orriginal_av, e, decodings)                    
                         delta = (score_old - score)
-                        if (delta > 0) and (temp > 0):
-                            chancePassoIndireto = getChancePassosIndireto(delta, temp)
-                            dic_delta[e] = delta
+                        dic_delta[e] = delta
+                        if (delta > 0):
+                            chancePassoIndireto = getChancePassosIndireto(delta, temp)                            
                             dic_prob[e] = chancePassoIndireto
                             if (np.random.rand()<=chancePassoIndireto):
                                 batch_mol[i,a] = mol_orriginal
                                 dic_accept[e] = 1
                 
+                    if (temp < 0.03):
+                        print('Stop search! Temperatue zero')
+                        break
             # np.save("History/out-{}.npy".format(e), batch_mol)
 
             print (f"Epoch {e}")
