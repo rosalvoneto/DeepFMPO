@@ -284,7 +284,8 @@ def should_use(fragment):
 # Split a list of molecules into fragments.
 def get_fragments(mols):
 
-    used_mols = np.zeros(len(mols)) != 0
+    #used_mols = np.zeros(len(mols)) != 0
+    used_mols = np.zeros(len(mols)) == 0
 
     fragments = dict()
 
