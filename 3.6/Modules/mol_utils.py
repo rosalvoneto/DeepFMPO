@@ -297,12 +297,12 @@ def get_fragments(mols):
             fs = split_molecule(mol)
         except:
             continue
-
+        """
         if len(fs) <= MAX_FRAGMENTS and all(map(should_use, fs)):
             used_mols[i] = True
         else:
             continue
-
+        """
         for f in fs:
             cl = get_class(f)
             fragments[Chem.MolToSmiles(f)] = (f, cl)
